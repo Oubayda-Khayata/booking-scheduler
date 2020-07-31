@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::resource('experts', 'ExpertController');
+Route::get('get-appointment-durations', 'BookingController@getAppointmentDurations');
+Route::post('book-appointment', 'BookingController@bookAppointment');
+Route::get('get-expert-appointments/{expert_id}', 'BookingController@getExpertAppointments');
+Route::get('get-time-slots', 'BookingController@getTimeSlots');
