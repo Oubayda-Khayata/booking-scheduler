@@ -11,6 +11,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
+        $this->call(AppointmentDurationSeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(TimezoneSeeder::class);
+        $this->call(CountryTimezoneSeeder::class);
+        $this->call(ExpertSeeder::class);
     }
 }
