@@ -19,3 +19,4 @@ Route::get('get-appointment-durations', 'BookingController@getAppointmentDuratio
 Route::post('book-appointment', 'BookingController@bookAppointment');
 Route::get('get-expert-appointments/{expert_id}', 'BookingController@getExpertAppointments');
 Route::get('get-time-slots', 'BookingController@getTimeSlots');
+Route::post('clear-appointments', 'BookingController@clearAppointments');

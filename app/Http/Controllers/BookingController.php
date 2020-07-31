@@ -219,4 +219,10 @@ class BookingController extends Controller
 
         return json('success', ['Time slots retrieved successfully'], ['time_slots' => $timeSlots]);
     }
+
+    public function clearAppointments()
+    {
+        Appointment::truncate();
+        return json('success', ['Appointments cleared successfully'], []);
+    }
 }
