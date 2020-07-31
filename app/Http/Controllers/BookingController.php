@@ -26,7 +26,6 @@ class BookingController extends Controller
         return json('success', ['Appointment Durations retrieved successfully'], ['appointment_durations' => AppointmentDuration::all()]);
     }
 
-    // Check if the datetime is available
     public function bookAppointment(CreateAppointmentRequest $request)
     {
         $expertId = $request->input('expert_id');
@@ -87,6 +86,9 @@ class BookingController extends Controller
 
     public function getExpertAppointments(RetrieveExpertAppointmentsRequest $request, $expert_id)
     {
+        if (!Expert::where('id', $expert_id)->exists()) {
+            return json('error', ['Expert id not found'], ['id' => $expert_id], 404);
+        }
         $userTimezone = CarbonTimeZone::create($request->header('timezone'));
         $fromDate = Carbon::createFromTimestamp((int)$request->input('from_date'), $userTimezone->toOffsetName());
         $toDate = Carbon::createFromTimestamp((int)$request->input('to_date'), $userTimezone->toOffsetName());
@@ -132,12 +134,13 @@ class BookingController extends Controller
         $expertTimezone = CarbonTimeZone::create($expert['countryTimezone']['timezone']['name']);
 
         $userSelectedDate = Carbon::createFromTimestamp((int)$request->input('date'), $userTimezone->toOffsetName());
-        $userSelectedDate->utc();
+        //$userSelectedDate->utc();
 
 
         $expertWorkingTimeFrom = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone->toOffsetName());
         $expertWorkingTimeFrom->addMinutes((int)$expert['daily_working_time_from']);
-        $expertWorkingTimeFrom->utc();
+        $expertWorkingTimeFrom->setTimezone($userTimezone->toOffsetName());
+        //$expertWorkingTimeFrom->utc();
         // User selected date and expert working time all in UTC
         $expertFromDate = $userSelectedDate->clone()
             ->setTime(
@@ -146,18 +149,18 @@ class BookingController extends Controller
                 $expertWorkingTimeFrom->second // Not necessary, but to be accurate
             );
 
-        $expertWorkingTimeTo = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone->toOffsetName());
-        $expertWorkingTimeTo->addMinutes((int)$expert['daily_working_time_to']);
-        $expertWorkingTimeTo->utc();
-        // User selected date and expert working time all in UTC
-        $expertToDate = $userSelectedDate->clone()
-            // In case the expert works continuously from one day to another
-            ->addDays((int)$expert['daily_working_time_from'] > (int)$expert['daily_working_time_to'] ? 1 : 0)
-            ->setTime(
-                $expertWorkingTimeTo->hour,
-                $expertWorkingTimeTo->minute,
-                $expertWorkingTimeTo->second // Not necessary, but to be accurate
-            );
+        $expertWorkingTimeDuration = (int)$expert['daily_working_time_to'] - (int)$expert['daily_working_time_from'];
+        // In case the expert works continuously from one day to another
+        if ($expertWorkingTimeDuration < 0) {
+            $expertWorkingTimeDuration += 1440;
+        }
+        $expertToDate = $expertFromDate->clone()
+            ->addMinutes($expertWorkingTimeDuration);
+
+
+        // Convert date and time to UTC
+        $expertFromDate->utc();
+        $expertToDate->utc();
 
 
         /* Get all appointments of the selected expert

@@ -88,7 +88,7 @@ class ExpertController extends Controller
     {
         $expertDb = Expert::where('id', $id);
         if(!$expertDb->exists()) {
-            return json('error', 'expert id not found', ['id' => $id], 404);
+            return json('error', ['expert id not found'], ['id' => $id], 404);
         }
 
         $userTimezone = CarbonTimeZone::create(request()->header('timezone'));
