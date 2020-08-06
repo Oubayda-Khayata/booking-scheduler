@@ -59,17 +59,17 @@ class BookingController extends Controller
             count(array_filter($appointments, function ($appointment) use ($appointmentStartDateTime, $appointmentDuration) {
                 $startDateTime = $appointmentStartDateTime->clone();
                 $endDateTime = $appointmentStartDateTime->clone()->addMinutes($appointmentDuration['duration_in_minutes']);
-                $appointmentStartDateTime = Carbon::createFromTimestamp($appointment['datetime']);
-                $appointmentEndDateTime = $appointmentStartDateTime->clone()->addMinutes($appointment['appointment_duration']['duration_in_minutes']);
+                $currentAppointmentStartDateTime = Carbon::createFromTimestamp($appointment['datetime']);
+                $currentAppointmentEndDateTime = $appointmentStartDateTime->clone()->addMinutes($appointment['appointment_duration']['duration_in_minutes']);
                 return !(
                     (
                         // If the start and the end of the current time slot is less than the current appointment date and time
-                        $startDateTime->getTimestamp() < $appointmentStartDateTime->getTimestamp() &&
-                        $endDateTime->getTimestamp() <= $appointmentStartDateTime->getTimestamp()) || // Or
+                        $startDateTime->getTimestamp() < $currentAppointmentStartDateTime->getTimestamp() &&
+                        $endDateTime->getTimestamp() <= $currentAppointmentStartDateTime->getTimestamp()) || // Or
                     (
                         // If the start and the end of the current time slot is greater than the current appointment end date and time
-                        $startDateTime->getTimestamp() >= $appointmentEndDateTime->getTimestamp() &&
-                        $endDateTime->getTimestamp() > $appointmentEndDateTime->getTimestamp()));
+                        $startDateTime->getTimestamp() >= $currentAppointmentEndDateTime->getTimestamp() &&
+                        $endDateTime->getTimestamp() > $currentAppointmentEndDateTime->getTimestamp()));
             })) > 0;
         if ($doesIntersectWithAppointment) {
             return json('error', ['This appointment date and time is already booked'], [], 400);

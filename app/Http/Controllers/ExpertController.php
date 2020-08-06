@@ -26,14 +26,15 @@ class ExpertController extends Controller
         $userTimezone = CarbonTimeZone::create(request()->header('timezone'));
         foreach($expertsDb as $expertDb) {
             $expertTimezone = $expertDb['countryTimezone']['timezone']['name'];
+            $expertTimezone = CarbonTimeZone::create($expertTimezone);
 
-            $fromDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone);
+            $fromDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone->toOffsetName());
             $expertWorkingTimeFrom = (int)$expertDb['daily_working_time_from'];
             $fromDate->addMinutes($expertWorkingTimeFrom);
             // Convert daily working time of the expert from his timezone to the user timezone
             $fromDate->setTimezone($userTimezone->toOffsetName());
 
-            $toDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone);
+            $toDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone->toOffsetName());
             $expertWorkingTimeTo = (int)$expertDb['daily_working_time_to'];
             // Check whether the expert works continuously from one day to the next day
             if ($expertWorkingTimeTo < $expertWorkingTimeFrom) {
@@ -94,14 +95,15 @@ class ExpertController extends Controller
         $userTimezone = CarbonTimeZone::create(request()->header('timezone'));
         $expertDb = $expertDb->with(['countryTimezone.country', 'countryTimezone.timezone'])->first();
         $expertTimezone = $expertDb['countryTimezone']['timezone']['name'];
+        $expertTimezone = CarbonTimeZone::create($expertTimezone);
 
-        $fromDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone);
+        $fromDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone->toOffsetName());
         $expertWorkingTimeFrom = (int)$expertDb['daily_working_time_from'];
         $fromDate->addMinutes($expertWorkingTimeFrom);
         // Convert daily working time of the expert from his timezone to the user timezone
         $fromDate->setTimezone($userTimezone->toOffsetName());
 
-        $toDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone);
+        $toDate = Carbon::create(0, 1, 1, 0, 0, 0, $expertTimezone->toOffsetName());
         $expertWorkingTimeTo = (int)$expertDb['daily_working_time_to'];
         // Check whether the expert works continuously from one day to the next day
         if ($expertWorkingTimeTo < $expertWorkingTimeFrom) {
