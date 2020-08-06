@@ -12,7 +12,7 @@ class ExpertSeeder extends Seeder
     public function run()
     {
         \App\Models\Expert::create([
-            'country_timezone_id' => 1,
+            'country_timezone_id' => 282,
             'firstname' => 'William',
             'lastname' => 'Jordan',
             'gender' => 'male',
@@ -21,7 +21,7 @@ class ExpertSeeder extends Seeder
             'daily_working_time_to' => 1020 // 17 * 60
         ]);
         \App\Models\Expert::create([
-            'country_timezone_id' => 2,
+            'country_timezone_id' => 355,
             'firstname' => 'Quasi',
             'lastname' => 'Shawa',
             'gender' => 'male',
@@ -30,7 +30,7 @@ class ExpertSeeder extends Seeder
             'daily_working_time_to' => 720 // 12 * 60
         ]);
         \App\Models\Expert::create([
-            'country_timezone_id' => 3,
+            'country_timezone_id' => 145,
             'firstname' => 'Shimaa',
             'lastname' => 'Badawy',
             'gender' => 'female',
