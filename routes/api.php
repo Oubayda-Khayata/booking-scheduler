@@ -20,4 +20,5 @@ Route::post('book-appointment', 'BookingController@bookAppointment');
 Route::get('get-expert-appointments/{expert_id}', 'BookingController@getExpertAppointments');
 Route::get('get-time-slots', 'BookingController@getTimeSlots');
 Route::post('clear-appointments', 'BookingController@clearAppointments');
-Route::get('get-timezone', 'TimezoneController@getTimezone');
+Route::get('get-timezone', 'TimezoneController@getUserTimezone');
+Route::resource('timezones', 'TimezoneController');
