@@ -60,7 +60,7 @@ class BookingController extends Controller
                 $startDateTime = $appointmentStartDateTime->clone();
                 $endDateTime = $appointmentStartDateTime->clone()->addMinutes($appointmentDuration['duration_in_minutes']);
                 $currentAppointmentStartDateTime = Carbon::createFromTimestamp($appointment['datetime']);
-                $currentAppointmentEndDateTime = $appointmentStartDateTime->clone()->addMinutes($appointment['appointment_duration']['duration_in_minutes']);
+                $currentAppointmentEndDateTime = $currentAppointmentStartDateTime->clone()->addMinutes($appointment['appointment_duration']['duration_in_minutes']);
                 return !(
                     (
                         // If the start and the end of the current time slot is less than the current appointment date and time
